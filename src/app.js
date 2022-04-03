@@ -1,6 +1,6 @@
 import express from "express";
 import { Server } from "socket.io";
-import __dirname from "./utils";
+import __dirname from "./utils.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -12,4 +12,10 @@ const server = app.listen(PORT, () => {
 const io = new Server(server);
 const log = [];
 
-io.on("connection", (socket) => {});
+io.on("connection", (socket) => {
+  socket.emit("log", log);
+  socket.on("message", (data) => {
+    log.push(data);
+    io.emit("log", log);
+  });
+});
